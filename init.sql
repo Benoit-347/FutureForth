@@ -47,11 +47,11 @@ CREATE TABLE IF NOT EXISTS products (
     price DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     seller_id INT NOT NULL,
-    status VARCHAR(255) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'sold')),
+    status VARCHAR(10) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'sold')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS cart (
@@ -62,7 +62,8 @@ CREATE TABLE IF NOT EXISTS cart (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    CONSTRAINT unique_cart_item UNIQUE (user_id, product_id)
 );
 
 CREATE TABLE IF NOT EXISTS purchases (
